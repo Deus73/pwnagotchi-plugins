@@ -1,3 +1,4 @@
+import scapy.all as scapy
 from pwnagotchi.plugins import BasePlugin
 
 class TrafficSniffer(BasePlugin):
@@ -11,9 +12,15 @@ class TrafficSniffer(BasePlugin):
     def on_loaded(self):
         self.log.info("Traffic Sniffer Plugin loaded")
 
-    def on_packet(self, agent, packet):
-        # Analyze or log the packet as needed
-        pass
+    def packet_handler(self, packet):
+        # Customize packet handling logic here
+        print(packet.summary())
+
+    def start_sniffing(self):
+        scapy.sniff(prn=self.packet_handler, store=False)
+
+    def on_periodic(self, agent):
+        self.start_sniffing()
 
     def on_unload(self):
         self.log.info("Traffic Sniffer Plugin unloaded")
